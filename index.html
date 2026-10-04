@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Calculator</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  margin:0;
+  background:#f4f6f8;
+  color:#222;
+}
+
+.container{
+  max-width:700px;
+  margin:auto;
+  padding:20px;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:5px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#666;
+  margin-bottom:20px;
+}
+
+.tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.tabs button{
+  flex:1;
+  min-width:120px;
+  padding:12px;
+  border:0;
+  border-radius:10px;
+  background:#ddd;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.tabs button.active{
+  background:#2563eb;
+  color:white;
+}
+
+.box{
+  background:white;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 3px 12px #00000015;
+}
+
+input{
+  width:100%;
+  padding:13px;
+  margin:8px 0 15px;
+  border:1px solid #ccc;
+  border-radius:9px;
+  font-size:16px;
+}
+
+button.calculate{
+  width:100%;
+  padding:13px;
+  border:0;
+  border-radius:9px;
+  background:#2563eb;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.result{
+  margin-top:15px;
+  padding:15px;
+  background:#eef4ff;
+  border-radius:9px;
+  font-weight:bold;
+}
+
+.calculator{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.calculator input{
+  grid-column:span 4;
+  text-align:right;
+  font-size:25px;
+  margin-bottom:5px;
+}
+
+.calculator button{
+  padding:17px;
+  border:0;
+  border-radius:9px;
+  background:#eee;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.calculator .operator{
+  background:#dbeafe;
+}
+
+.calculator .equal{
+  grid-column:span 4;
+  background:#2563eb;
+  color:white;
+}
+
+.hidden{
+  display:none;
+}
+
+footer{
+  text-align:center;
+  color:#777;
+  margin-top:25px;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎓 Student Calculator</h1>
+<p class="subtitle">Free calculators to make student calculations easy</p>
+
+<div class="tabs">
+<button class="active" onclick="show('basic',this)">Basic</button>
+<button onclick="show('percentage',this)">Percentage</button>
+<button onclick="show('marks',this)">Marks</button>
+<button onclick="show('average',this)">Average</button>
+</div>
+
+<!-- BASIC -->
+<div id="basic" class="box">
+
+<h2>Basic Calculator</h2>
+
+<div class="calculator">
+
+<input id="display" readonly placeholder="0">
+
+<button onclick="add('7')">7</button>
+<button onclick="add('8')">8</button>
+<button onclick="add('9')">9</button>
+<button class="operator" onclick="add('/')">÷</button>
+
+<button onclick="add('4')">4</button>
+<button onclick="add('5')">5</button>
+<button onclick="add('6')">6</button>
+<button class="operator" onclick="add('*')">×</button>
+
+<button onclick="add('1')">1</button>
+<button onclick="add('2')">2</button>
+<button onclick="add('3')">3</button>
+<button class="operator" onclick="add('-')">−</button>
+
+<button onclick="add('0')">0</button>
+<button onclick="add('.')">.</button>
+<button onclick="clearDisplay()">C</button>
+<button class="operator" onclick="add('+')">+</button>
+
+<button class="equal" onclick="calculate()">=</button>
+
+</div>
+</div>
+
+<!-- PERCENTAGE -->
+<div id="percentage" class="box hidden">
+
+<h2>Percentage Calculator</h2>
+
+<label>Obtained Marks</label>
+<input id="obtained" type="number" placeholder="Example: 450">
+
+<label>Total Marks</label>
+<input id="total" type="number" placeholder="Example: 500">
+
+<button class="calculate" onclick="percentage()">Calculate Percentage</button>
+
+<div id="percentageResult" class="result">Your result will appear here.</div>
+
+</div>
+
+<!-- MARKS -->
+<div id="marks" class="box hidden">
+
+<h2>Marks Calculator</h2>
+
+<label>Enter marks separated by commas</label>
+
+<input id="marksInput" placeholder="Example: 85, 92, 78, 90, 88">
+
+<button class="calculate" onclick="marks()">Calculate</button>
+
+<div id="marksResult" class="result">Your result will appear here.</div>
+
+</div>
+
+<!-- AVERAGE -->
+<div id="average" class="box hidden">
+
+<h2>Average Calculator</h2>
+
+<label>Enter numbers separated by commas</label>
+
+<input id="averageInput" placeholder="Example: 10, 20, 30, 40">
+
+<button class="calculate" onclick="average()">Calculate Average</button>
+
+<div id="averageResult" class="result">Your result will appear here.</div>
+
+</div>
+
+<footer>
+© 2026 Student Calculator • Free for Students
+</footer>
+
+</div>
+
+<script>
+
+function show(id,button){
+
+document.querySelectorAll('.box').forEach(function(box){
+box.classList.add('hidden');
+});
+
+document.getElementById(id).classList.remove('hidden');
+
+document.querySelectorAll('.tabs button').forEach(function(btn){
+btn.classList.remove('active');
+});
+
+button.classList.add('active');
+}
+
+
+function add(value){
+document.getElementById("display").value += value;
+}
+
+
+function clearDisplay(){
+document.getElementById("display").value="";
+}
+
+
+function calculate(){
+
+let expression=document.getElementById("display").value;
+
+if(expression===""){
+return;
+}
+
+try{
+
+let result=Function('"use strict";return ('+expression+')')();
+
+document.getElementById("display").value=result;
+
+}catch{
+
+document.getElementById("display").value="Error";
+
+}
+
+}
+
+
+function percentage(){
+
+let obtained=Number(document.getElementById("obtained").value);
+let total=Number(document.getElementById("total").value);
+
+if(total<=0){
+
+document.getElementById("percentageResult").innerText=
+"Please enter valid marks.";
+
+return;
+}
+
+let result=(obtained/total)*100;
+
+document.getElementById("percentageResult").innerText=
+"Your Percentage: "+result.toFixed(2)+"%";
+
+}
+
+
+function marks(){
+
+let input=document.getElementById("marksInput").value;
+
+let values=input.split(",").map(Number);
+
+if(values.length===0 || values.some(isNaN)){
+
+document.getElementById("marksResult").innerText=
+"Please enter valid marks.";
+
+return;
+}
+
+let total=values.reduce((a,b)=>a+b,0);
+let avg=total/values.length;
+
+document.getElementById("marksResult").innerText=
+"Total Marks: "+total+" | Average: "+avg.toFixed(2);
+
+}
+
+
+function average(){
+
+let input=document.getElementById("averageInput").value;
+
+let values=input.split(",").map(Number);
+
+if(values.length===0 || values.some(isNaN)){
+
+document.getElementById("averageResult").innerText=
+"Please enter valid numbers.";
+
+return;
+}
+
+let total=values.reduce((a,b)=>a+b,0);
+let avg=total/values.length;
+
+document.getElementById("averageResult").innerText=
+"Average: "+avg.toFixed(2);
+
+}
+
+</script>
+
+</body>
+  </html>
